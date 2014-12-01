@@ -5,6 +5,7 @@ attr KTNR = 0
 attr KTNAME = ""
 attr YOUNGEST = 0
 attr WORKINGPARTY = 0
+attr BABYBOOMER = 0
 attr SENIORS = 0
 attr TOTALPOP = 0
 
@@ -29,15 +30,15 @@ Kanton-->
 Kanton_inaktiv-->
 	color(colorRamp("whiteToBlack",rand(0.2,0.7)))
 	extrude(baseheight)
-	print(initialShape.name)
-	print("Shape "+Selected_Kanton)
+#	print(initialShape.name)
+#	print("Shape "+Selected_Kanton)
 	
 Kanton_aktiv-->
 	extrude(activeheight)
-	print(initialShape.name)
-	print("Shape "+Selected_Kanton)
+#	print(initialShape.name)
+#	print("Shape "+Selected_Kanton)
 	alignScopeToAxes(x)
-	split(x){'(1/TOTALPOP*YOUNGEST):spalte_1 | '(1/TOTALPOP*WORKINGPARTY):spalte_2 | '(1/TOTALPOP*SENIORS):spalte_3} #| '0.2:spalte_4
+	split(x){'(1/TOTALPOP*YOUNGEST):spalte_1 | '(1/TOTALPOP*WORKINGPARTY):spalte_2 | '(1/TOTALPOP*BABYBOOMER):spalte_3 | '(1/TOTALPOP*SENIORS):spalte_4} #
 
 Kanton_alle-->
 	offset(kantonsgrenze) comp(f) { inside: I | border: O }
@@ -61,3 +62,6 @@ spalte_4-->
 Wasser-->
 	color(color_wasser)
 	extrude(baseheight+10)
+	
+Schweiz-->
+	Kanton_aktiv
