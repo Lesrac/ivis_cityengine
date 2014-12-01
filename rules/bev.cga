@@ -1,0 +1,63 @@
+version "2014.1"
+
+attr Selected_Kanton = 0
+attr KTNR = 0
+attr KTNAME = ""
+attr YOUNGEST = 0
+attr WORKINGPARTY = 0
+attr SENIORS = 0
+attr TOTALPOP = 0
+
+const activeheight = 40000
+const baseheight = 10000
+const kantonsgrenze = -2000
+const color1 = "#c0392b"
+const color2 = "#2980b9"
+const color3 = "#f39c12"
+const color4 = "#27ae60"
+const color_wasser = "#2940f9"
+const color_kantonsgrenze = "#CCCCCC"
+
+Kanton-->
+	case Selected_Kanton < 0 : Kanton_inaktiv
+	case Selected_Kanton < 1 : Kanton_alle
+	case Selected_Kanton < KTNR+1 :
+		case Selected_Kanton >= KTNR : Kanton_aktiv
+		else : Kanton_inaktiv
+	else : Kanton_inaktiv
+
+Kanton_inaktiv-->
+	color(colorRamp("whiteToBlack",rand(0.2,0.7)))
+	extrude(baseheight)
+	print(initialShape.name)
+	print("Shape "+Selected_Kanton)
+	
+Kanton_aktiv-->
+	extrude(activeheight)
+	print(initialShape.name)
+	print("Shape "+Selected_Kanton)
+	alignScopeToAxes(x)
+	split(x){'(1/TOTALPOP*YOUNGEST):spalte_1 | '(1/TOTALPOP*WORKINGPARTY):spalte_2 | '(1/TOTALPOP*SENIORS):spalte_3} #| '0.2:spalte_4
+
+Kanton_alle-->
+	offset(kantonsgrenze) comp(f) { inside: I | border: O }
+I --> Kanton_aktiv
+O -->
+	color(color_kantonsgrenze)
+	extrude(baseheight)
+	
+spalte_1-->
+	print(geometry.area) color(color1)
+
+spalte_2-->
+	print(geometry.area) color(color2)
+
+spalte_3-->
+	print(geometry.area) color(color3)
+	
+spalte_4-->
+	print(geometry.area) color(color4)
+	
+Wasser-->
+	color(color_wasser)
+	extrude(baseheight+10)
